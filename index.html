@@ -9,7 +9,146 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@800&family=DM+Sans:wght@400;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <noscript><link href="https://fonts.googleapis.com/css2?family=Syne:wght@800&family=DM+Sans:wght@400;600&display=swap" rel="stylesheet"></noscript>
 <link rel="stylesheet" href="style.css">
-<link rel="icon" type="image/png" href="m.png"/>
+<link rel="icon" type="image/png" href="e.png"/>
+<style>
+/* ── Schwierigkeits-Toggle ── */
+.level-toggle {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 50px;
+  padding: .35rem .5rem;
+  width: fit-content;
+  margin-bottom: 1.8rem;
+  position: sticky;
+  top: 68px;
+  z-index: 9;
+  box-shadow: 0 2px 12px rgba(0,0,0,.08);
+}
+.level-toggle span { font-size: .82rem; font-weight: 600; color: var(--muted); padding: 0 .3rem; }
+.toggle-btn {
+  border: none; cursor: pointer; border-radius: 30px;
+  padding: .38rem 1.1rem; font-size: .83rem; font-weight: 700;
+  transition: all .22s; background: none; color: var(--muted);
+}
+.toggle-btn.on { background: var(--blue); color: #fff; }
+
+/* Inhalt-Sichtbarkeit */
+.easy-only   { display: block; }
+.adv-only    { display: none; }
+body.adv .easy-only { display: none; }
+body.adv .adv-only  { display: block; }
+
+/* ── Erklär-Boxen ── */
+.explain-box {
+  border-radius: 12px; padding: 1.1rem 1.3rem; margin: .8rem 0;
+  font-size: .93rem; line-height: 1.7;
+}
+.explain-easy  { background: #efffef; border-left: 4px solid var(--green); }
+.explain-adv   { background: #eef3ff; border-left: 4px solid var(--blue); }
+.explain-warn  { background: #fffbea; border-left: 4px solid var(--yellow); }
+.explain-box strong { display: block; margin-bottom: .4rem; font-size: .78rem;
+  text-transform: uppercase; letter-spacing: .06em; opacity: .65; }
+
+/* ── Formel-Block ── */
+.formula-block {
+  background: #0f172a; color: #e2e8f0;
+  border-radius: 10px; padding: 1rem 1.3rem; margin: .9rem 0;
+  font-family: 'Courier New', monospace; font-size: 1.05rem;
+  border-left: 4px solid var(--blue);
+}
+.formula-block .f-label { font-size: .77rem; color: #94a3b8; margin-bottom: .4rem; font-family: 'DM Sans', sans-serif; }
+.formula-block .f-main  { color: #7dd3fc; font-size: 1.15rem; font-weight: 700; margin-bottom: .3rem; }
+.formula-block .f-note  { font-size: .8rem; color: #94a3b8; font-family: 'DM Sans', sans-serif; margin-top: .4rem; }
+
+/* ── Beispiel-Block ── */
+.example-block {
+  background: var(--surface); border: 1.5px dashed var(--border);
+  border-radius: 12px; padding: 1.1rem 1.3rem; margin: .8rem 0;
+}
+.example-block .ex-head { font-weight: 700; color: var(--blue); margin-bottom: .6rem; font-size: .88rem; }
+.example-block .ex-step { display: flex; gap: .7rem; margin-bottom: .5rem; font-size: .9rem; align-items: flex-start; }
+.ex-num { background: var(--blue); color: #fff; border-radius: 50%; width: 22px; height: 22px;
+  display: flex; align-items: center; justify-content: center; font-size: .75rem; font-weight: 700; flex-shrink: 0; margin-top: .05rem; }
+.ex-text { flex: 1; line-height: 1.6; }
+
+/* ── Merkkarte ── */
+.merkkarte {
+  background: linear-gradient(135deg, #1a56db 0%, #0d9d58 100%);
+  color: #fff; border-radius: 14px; padding: 1.2rem 1.5rem; margin: 1rem 0;
+}
+.merkkarte h4 { margin: 0 0 .5rem; font-size: .85rem; opacity: .85; }
+.merkkarte p  { margin: 0; font-size: .95rem; line-height: 1.55; }
+
+/* ── Themen-Tabs innerhalb Lernen ── */
+.learn-tabs { display: flex; gap: .4rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.learn-tab {
+  border: 1.5px solid var(--border); background: var(--surface);
+  border-radius: 20px; padding: .38rem 1rem; font-size: .85rem;
+  font-weight: 600; cursor: pointer; color: var(--muted); transition: .2s;
+}
+.learn-tab.active, .learn-tab:hover { background: var(--blue); color: #fff; border-color: var(--blue); }
+
+/* ── Lern-Abschnitt ── */
+.learn-section { display: none; }
+.learn-section.active { display: block; }
+
+/* ── Tabelle ── */
+.data-table { width: 100%; border-collapse: collapse; margin: .8rem 0; }
+.data-table th { background: var(--blue); color: #fff; padding: .5rem .8rem; text-align: center; font-size: .85rem; }
+.data-table td { padding: .45rem .8rem; text-align: center; border-bottom: 1px solid var(--border); font-size: .88rem; }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:nth-child(even) td { background: color-mix(in srgb, var(--bg) 60%, var(--surface)); }
+
+/* ── Baum-Visualisierung ── */
+.tree-svg { width: 100%; max-width: 520px; display: block; margin: .5rem auto; }
+
+/* ── Mini-Quiz innerhalb Lernen ── */
+.mini-quiz { background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px; padding: 1.2rem; margin: 1rem 0; }
+.mini-quiz p { font-weight: 600; margin-bottom: .9rem; }
+.mq-opts { display: flex; flex-direction: column; gap: .4rem; }
+.mq-btn { border: 1.5px solid var(--border); background: var(--surface); border-radius: 8px;
+  padding: .55rem 1rem; text-align: left; cursor: pointer; font-size: .9rem; transition: .18s; }
+.mq-btn:hover { border-color: var(--blue); background: #eef3ff; }
+.mq-btn.correct  { background: #d1fae5; border-color: var(--green); color: #064e3b; }
+.mq-btn.wrong    { background: #fee2e2; border-color: var(--red);   color: #7f1d1d; }
+.mq-feedback     { margin-top: .7rem; font-weight: 700; min-height: 1.2rem; font-size: .9rem; }
+
+/* ── Rechner-Box ── */
+.calc-box { background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px; padding: 1.3rem; }
+.calc-box h3 { margin-top: 0; font-size: 1rem; margin-bottom: 1rem; }
+.calc-input { display: flex; gap: .6rem; flex-wrap: wrap; margin-bottom: .8rem; align-items: center; }
+.calc-input input { flex: 1; min-width: 180px; }
+.calc-result { background: var(--bg); border-radius: 10px; padding: 1rem; margin-top: .8rem; font-size: .92rem; line-height: 1.8; display: none; }
+.calc-result.show { display: block; }
+.res-val { font-weight: 700; color: var(--blue); font-size: 1.1rem; }
+
+/* ── Schritt-Anzeige ── */
+.steps-box { margin: .8rem 0; }
+.step-item { display: flex; gap: .8rem; margin-bottom: .7rem; align-items: flex-start; }
+.step-badge { background: var(--blue); color: #fff; border-radius: 8px; width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: .85rem; flex-shrink: 0; }
+.step-body { flex: 1; line-height: 1.6; font-size: .9rem; padding-top: .1rem; }
+
+/* ── Spickzettel ── */
+.cheatsheet { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+.cheat-item { background: var(--surface); border: 1.5px solid var(--border); border-radius: 12px; padding: 1rem; }
+.cheat-item h4 { margin: 0 0 .5rem; color: var(--blue); font-size: .9rem; }
+.cheat-formula { font-family: 'Courier New', monospace; font-size: .95rem; background: var(--bg); border-radius: 6px;
+  padding: .3rem .6rem; display: inline-block; margin: .3rem 0; color: #0f172a; }
+.cheat-desc { font-size: .8rem; color: var(--muted); margin-top: .3rem; line-height: 1.5; }
+
+/* ── Responsiv für neue Elemente ── */
+@media (max-width: 600px) {
+  .level-toggle { top: 56px; padding: .28rem .4rem; margin-bottom: 1.2rem; }
+  .toggle-btn   { padding: .3rem .8rem; font-size: .78rem; }
+  .learn-tabs   { gap: .3rem; }
+  .learn-tab    { font-size: .78rem; padding: .3rem .75rem; }
+  .cheatsheet   { grid-template-columns: 1fr; }
+}
+</style>
 </head>
 <body>
 <header>
@@ -42,60 +181,684 @@
  </div>
 </header>
 
+<!-- ══════════════════ HOME ══════════════════ -->
 <div id="home" class="page active">
  <div class="card">
   <h1>Willkommen zur MEGA‑Statistik‑Lernplattform</h1>
   <p>Diese Website ist eine <b>extrem umfangreiche Lernplattform</b> für Statistik & Wahrscheinlichkeit (10. Klasse).
-     Sie kombiniert <b>Erklärungen, Simulationen, Rechenaufgaben, Quiz, Challenges und Fortschrittssysteme</b> – alles in <b>einer Datei</b>.</p>
+     Sie kombiniert <b>Erklärungen, Simulationen, Rechenaufgaben, Quiz, Challenges</b> – und jetzt mit <b>Schwierigkeitsschalter</b> für einfache und fortgeschrittene Inhalte.</p>
  </div>
  <div class="grid">
-  <div class="card card-link" onclick="go('lernen', this)"><h3>📘 Lernen</h3><p>Theorie verständlich erklärt</p></div>
-  <div class="card card-link" onclick="go('rechnen', this)"><h3>🧮 Rechnen</h3><p>Sehr viele zufällige Aufgaben</p></div>
-  <div class="card card-link" onclick="go('simulation', this)"><h3>🎲 Simulation</h3><p>Experimente live erleben</p></div>
-  <div class="card card-link" onclick="go('quiz', this)"><h3>🧠 Quiz</h3><p>Wissen testen</p></div>
+  <div class="card card-link" onclick="go('grundlagen')"><h3>📖 Grundlagen</h3><p>Alle Themen kompakt & verständlich erklärt</p></div>
+  <div class="card card-link" onclick="go('lernen')"><h3>📘 Lernen</h3><p>Interaktive Erklärungen, Rechner & Spickzettel</p></div>
+  <div class="card card-link" onclick="go('rechnen')"><h3>🧮 Rechnen</h3><p>Sehr viele zufällige Übungsaufgaben</p></div>
+  <div class="card card-link" onclick="go('simulation')"><h3>🎲 Simulation</h3><p>Zufallsexperimente live erleben</p></div>
+  <div class="card card-link" onclick="go('quiz')"><h3>🧠 Quiz</h3><p>Wissen mit Richtig/Falsch testen</p></div>
+  <div class="card card-link" onclick="go('challenge')"><h3>🔥 Challenge</h3><p>10 Aufgaben, Zeit läuft, Punkte zählen</p></div>
  </div>
 </div>
 
+<!-- ══════════════════ GRUNDLAGEN ══════════════════ -->
 <div id="grundlagen" class="page">
- <div class="card"><h2>Was ist Statistik?</h2><p>Statistik beschäftigt sich mit dem Sammeln, Ordnen, Darstellen und Auswerten von Daten.</p></div>
- <div class="card"><h2>Absolute & relative Häufigkeit</h2><p>Absolute Häufigkeit = Anzahl eines Ergebnisses<br>Relative Häufigkeit = Anteil an allen Versuchen</p></div>
-</div>
 
+ <!-- Schwierigkeits-Toggle -->
+ <div class="level-toggle">
+  <span>Niveau:</span>
+  <button class="toggle-btn on"  id="gl-easy" onclick="setLevel('easy','gl')">🟢 Einfach</button>
+  <button class="toggle-btn off" id="gl-adv"  onclick="setLevel('adv','gl')">🔵 Fortgeschritten</button>
+ </div>
+
+ <!-- 1. Was ist Statistik -->
+ <div class="card">
+  <h2>📊 Was ist Statistik?</h2>
+  <div class="explain-box explain-easy easy-only">
+   <strong>🟢 Einfache Erklärung</strong>
+   Statistik ist die Kunst, aus vielen Zahlen eine Geschichte zu erzählen. Du sammelst Daten (z. B. Noten der Klasse), ordnest sie und findest heraus, was typisch oder besonders ist — ganz wie ein Detektiv für Zahlen.
+  </div>
+  <div class="explain-box explain-adv adv-only">
+   <strong>🔵 Fachliche Definition</strong>
+   Statistik ist die Wissenschaft der systematischen <b>Erhebung, Aufbereitung, Analyse und Interpretation</b> quantitativer Daten. Ziel ist es, aus einer Stichprobe gesicherte Aussagen über eine Grundgesamtheit zu treffen.
+  </div>
+  <p><b>Schritte statistischer Arbeit:</b></p>
+  <div class="steps-box">
+   <div class="step-item"><div class="step-badge">1</div><div class="step-body"><b>Erheben</b> – Daten sammeln (Umfrage, Messung, Beobachtung)</div></div>
+   <div class="step-item"><div class="step-badge">2</div><div class="step-body"><b>Ordnen</b> – Urliste → Häufigkeitstabelle → sortierte Liste</div></div>
+   <div class="step-item"><div class="step-badge">3</div><div class="step-body"><b>Darstellen</b> – Balkendiagramm, Kreisdiagramm, Boxplot</div></div>
+   <div class="step-item"><div class="step-badge">4</div><div class="step-body"><b>Auswerten</b> – Mittelwert, Median, Streuung berechnen</div></div>
+   <div class="step-item"><div class="step-badge">5</div><div class="step-body"><b>Interpretieren</b> – Was bedeutet das Ergebnis?</div></div>
+  </div>
+ </div>
+
+ <!-- 2. Urliste & Häufigkeitstabelle -->
+ <div class="card">
+  <h2>📋 Urliste & Häufigkeitstabelle</h2>
+  <div class="explain-box explain-easy easy-only">
+   <strong>🟢 Einfach</strong>
+   Die <b>Urliste</b> ist einfach die rohe Liste, wie die Daten reinkommen — ungeordnet und durcheinander. Die <b>Häufigkeitstabelle</b> zählt dann, wie oft jeder Wert vorkommt.
+  </div>
+  <div class="explain-box explain-adv adv-only">
+   <strong>🔵 Fachlich</strong>
+   Die Urliste (Rohdatenmenge) enthält alle erhobenen Merkmalswerte in Erhebungsreihenfolge. Durch Auszählen entsteht die Häufigkeitstabelle mit absoluten und relativen Häufigkeiten.
+  </div>
+  <div class="example-block">
+   <div class="ex-head">📌 Beispiel: Schuhgrößen einer Schulklasse (25 Schüler)</div>
+   <p style="font-size:.88rem;color:var(--muted);margin:.3rem 0 .8rem"><i>Urliste (ungeordnet):</i> 38, 40, 39, 42, 38, 41, 40, 38, 43, 40, 39, 38, 41, 42, 40, 39, 38, 41, 40, 42, 38, 39, 41, 40, 43</p>
+   <div style="overflow-x:auto">
+   <table class="data-table">
+    <thead><tr><th>Schuhgröße</th><th>Strichliste</th><th>Abs. Häufigkeit h</th><th>Rel. Häufigkeit hᵣ</th><th>In %</th></tr></thead>
+    <tbody>
+     <tr><td>38</td><td>|||| |</td><td>6</td><td>0,24</td><td>24 %</td></tr>
+     <tr><td>39</td><td>||||</td><td>4</td><td>0,16</td><td>16 %</td></tr>
+     <tr><td>40</td><td>|||| ||</td><td>7</td><td>0,28</td><td>28 %</td></tr>
+     <tr><td>41</td><td>||||</td><td>4</td><td>0,16</td><td>16 %</td></tr>
+     <tr><td>42</td><td>|||</td><td>3</td><td>0,12</td><td>12 %</td></tr>
+     <tr><td>43</td><td>||</td><td>2</td><td>0,08</td><td>8 %</td></tr>
+     <tr><td><b>Gesamt</b></td><td></td><td><b>25</b></td><td><b>1,00</b></td><td><b>100 %</b></td></tr>
+    </tbody>
+   </table>
+   </div>
+  </div>
+  <div class="merkkarte">
+   <h4>⭐ Merke</h4>
+   <p>Die Summe aller absoluten Häufigkeiten = n (Gesamtanzahl). Die Summe aller relativen Häufigkeiten = 1 (= 100 %). Immer!</p>
+  </div>
+ </div>
+
+ <!-- 3. Absolute & Relative Häufigkeit -->
+ <div class="card">
+  <h2>📐 Absolute & Relative Häufigkeit</h2>
+  <div class="explain-box explain-easy easy-only">
+   <strong>🟢 Einfach erklärt</strong>
+   <b>Absolute Häufigkeit</b> = einfach zählen, wie oft etwas vorkommt.<br>
+   <b>Relative Häufigkeit</b> = welcher Anteil (Bruchteil) ist das von allen? Z. B. 6 von 25 → 6 ÷ 25 = 0,24 = 24 %.
+  </div>
+  <div class="explain-box explain-adv adv-only">
+   <strong>🔵 Fachlich</strong>
+   <b>Absolute Häufigkeit</b> H(x): Anzahl des Auftretens des Merkmalswerts x in der Stichprobe.<br>
+   <b>Relative Häufigkeit</b> h(x) = H(x) / n, wobei n die Stichprobengröße ist. Es gilt stets: 0 ≤ h(x) ≤ 1 und Σh(xᵢ) = 1.
+  </div>
+  <div class="formula-block adv-only">
+   <div class="f-label">Formel: Relative Häufigkeit</div>
+   <div class="f-main">hᵣ(A) = H(A) / n</div>
+   <div class="f-note">H(A) = absolute Häufigkeit von Ereignis A &nbsp;|&nbsp; n = Gesamtanzahl der Versuche</div>
+  </div>
+  <div class="example-block">
+   <div class="ex-head">📌 Aufgabe: Bei 200 Versuchen tritt Ereignis A genau 50 Mal auf.</div>
+   <div class="ex-step"><div class="ex-num">1</div><div class="ex-text">Absolute Häufigkeit H(A) = <b>50</b></div></div>
+   <div class="ex-step"><div class="ex-num">2</div><div class="ex-text">Relative Häufigkeit hᵣ(A) = 50 ÷ 200 = <b>0,25</b></div></div>
+   <div class="ex-step"><div class="ex-num">3</div><div class="ex-text">In Prozent: 0,25 × 100 = <b>25 %</b></div></div>
+  </div>
+  <div class="explain-box explain-warn easy-only">
+   <strong>⚠️ Häufiger Fehler</strong>
+   Viele teilen falsch herum! Merke: <b>Ereignis geteilt durch Gesamt</b> — nicht umgekehrt. 50 ÷ 200 = 0,25 ✅ &nbsp; 200 ÷ 50 = 4 ❌
+  </div>
+ </div>
+
+ <!-- 4. Mittelwert -->
+ <div class="card">
+  <h2>➕ Mittelwert (Arithmetisches Mittel)</h2>
+  <div class="explain-box explain-easy easy-only">
+   <strong>🟢 Was ist das?</strong>
+   Der Mittelwert ist der faire "Teiler". Stell dir vor, alle Schüler legen ihre Taschengeld-Euros zusammen in einen Topf und verteilen es gleichmäßig. Was jeder bekommt, ist der Mittelwert.
+  </div>
+  <div class="explain-box explain-adv adv-only">
+   <strong>🔵 Fachlich</strong>
+   Das arithmetische Mittel x̄ ist das Maß der zentralen Tendenz, das durch Addition aller Werte und Division durch ihre Anzahl berechnet wird. Es reagiert empfindlich auf Ausreißer.
+  </div>
+  <div class="formula-block">
+   <div class="f-label">Formel: Arithmetisches Mittel</div>
+   <div class="f-main">x̄ = (x₁ + x₂ + ... + xₙ) / n</div>
+   <div class="f-note">Alle Werte addieren, dann durch die Anzahl n teilen.</div>
+  </div>
+  <div class="example-block">
+   <div class="ex-head">📌 Beispiel: Noten in einem Test → 2, 3, 1, 4, 2, 3, 1</div>
+   <div class="ex-step"><div class="ex-num">1</div><div class="ex-text">Alle addieren: 2+3+1+4+2+3+1 = <b>16</b></div></div>
+   <div class="ex-step"><div class="ex-num">2</div><div class="ex-text">Durch Anzahl n = 7 teilen: 16 ÷ 7 ≈ <b>2,29</b></div></div>
+   <div class="ex-step"><div class="ex-num">3</div><div class="ex-text">Der Mittelwert beträgt <b>x̄ ≈ 2,29</b></div></div>
+  </div>
+  <div class="explain-box explain-adv adv-only">
+   <strong>🔵 Problem mit Ausreißern</strong>
+   Datensatz: 10, 11, 12, 9, 11, 100 → Mittelwert = 153/6 = 25,5. Dieser Wert ist wegen des Ausreißers 100 kaum repräsentativ. In solchen Fällen ist der Median besser geeignet.
+  </div>
+ </div>
+
+ <!-- 5. Median -->
+ <div class="card">
+  <h2>📏 Median (Zentralwert)</h2>
+  <div class="explain-box explain-easy easy-only">
+   <strong>🟢 Was ist das?</strong>
+   Stell dir vor, alle stellen sich nach Körpergröße in einer Reihe auf. Der Median ist die Person genau in der Mitte. Die Hälfte der Leute ist kleiner, die andere Hälfte größer.
+  </div>
+  <div class="explain-box explain-adv adv-only">
+   <strong>🔵 Fachlich</strong>
+   Der Median ist der Wert, der eine geordnete Datenmenge in zwei gleich große Hälften teilt. Er ist robuster gegenüber Ausreißern als das arithmetische Mittel.
+  </div>
+  <div class="formula-block">
+   <div class="f-label">Formel: Median</div>
+   <div class="f-main">n ungerade: Median = x₍ₙ₊₁₎/₂</div>
+   <div class="f-main" style="margin-top:.4rem">n gerade: Median = (xₙ/₂ + x₍ₙ/₂₎₊₁) / 2</div>
+   <div class="f-note">Zuerst sortieren! Dann den mittleren Wert ablesen (oder bei gerader Anzahl zwei Mittlere mitteln).</div>
+  </div>
+  <div class="example-block">
+   <div class="ex-head">📌 Beispiel 1 – ungerade Anzahl (n = 7): 3, 7, 1, 9, 4, 6, 2</div>
+   <div class="ex-step"><div class="ex-num">1</div><div class="ex-text">Sortieren: <b>1, 2, 3, 4, 6, 7, 9</b></div></div>
+   <div class="ex-step"><div class="ex-num">2</div><div class="ex-text">Position: (7+1)/2 = 4 → der 4. Wert</div></div>
+   <div class="ex-step"><div class="ex-num">3</div><div class="ex-text">Median = <b>4</b> ✅</div></div>
+  </div>
+  <div class="example-block">
+   <div class="ex-head">📌 Beispiel 2 – gerade Anzahl (n = 6): 5, 2, 8, 1, 9, 4</div>
+   <div class="ex-step"><div class="ex-num">1</div><div class="ex-text">Sortieren: <b>1, 2, 4, 5, 8, 9</b></div></div>
+   <div class="ex-step"><div class="ex-num">2</div><div class="ex-text">Die zwei mittleren (Pos. 3 & 4): 4 und 5</div></div>
+   <div class="ex-step"><div class="ex-num">3</div><div class="ex-text">Median = (4 + 5) / 2 = <b>4,5</b> ✅</div></div>
+  </div>
+  <div class="merkkarte">
+   <h4>⭐ Mittelwert vs. Median</h4>
+   <p>Mittelwert: gut wenn keine extremen Ausreißer vorhanden. Median: besser bei Ausreißern (z. B. Gehälter, Immobilienpreise).</p>
+  </div>
+ </div>
+
+ <!-- 6. Modus & Spannweite -->
+ <div class="card">
+  <h2>🎯 Modus & Spannweite</h2>
+  <div class="explain-box explain-easy easy-only">
+   <strong>🟢 Modus einfach</strong>
+   Der <b>Modus</b> ist der beliebteste Wert — der Wert, der am häufigsten vorkommt. Wie der Lieblingssong in einer Playlist.<br><br>
+   Die <b>Spannweite</b> zeigt, wie weit die Daten auseinander liegen: einfach größten Wert minus kleinsten Wert.
+  </div>
+  <div class="explain-box explain-adv adv-only">
+   <strong>🔵 Fachlich</strong>
+   <b>Modus (Modalwert)</b>: Der am häufigsten auftretende Wert. Ein Datensatz kann mehrere Modi haben (bimodal, multimodal) oder keinen eindeutigen.<br>
+   <b>Spannweite R</b>: R = x_max − x_min. Einfachstes Streuungsmaß, sehr anfällig für Ausreißer.
+  </div>
+  <div class="formula-block adv-only">
+   <div class="f-label">Spannweite</div>
+   <div class="f-main">R = x_max − x_min</div>
+   <div class="f-note">Größter Wert minus kleinster Wert der Datenmenge.</div>
+  </div>
+  <div class="example-block">
+   <div class="ex-head">📌 Beispiel: Würfelergebnisse → 3, 5, 2, 3, 6, 1, 3, 4, 2, 3</div>
+   <div class="ex-step"><div class="ex-num">🎯</div><div class="ex-text">Modus = <b>3</b> (kommt 4× vor)</div></div>
+   <div class="ex-step"><div class="ex-num">↔</div><div class="ex-text">Spannweite = 6 − 1 = <b>5</b></div></div>
+  </div>
+ </div>
+
+ <!-- 7. Wahrscheinlichkeit & Zufallsexperiment -->
+ <div class="card">
+  <h2>🎲 Zufallsexperiment & Wahrscheinlichkeit</h2>
+  <div class="explain-box explain-easy easy-only">
+   <strong>🟢 Einfach</strong>
+   Ein <b>Zufallsexperiment</b> ist alles, dessen Ausgang du nicht vorher weißt — z. B. einen Würfel werfen oder eine Münze werfen. <b>Wahrscheinlichkeit</b> sagt, wie wahrscheinlich ein bestimmtes Ergebnis ist: zwischen 0 (unmöglich) und 1 (sicher).
+  </div>
+  <div class="explain-box explain-adv adv-only">
+   <strong>🔵 Fachlich: Laplace-Experiment</strong>
+   Bei einem Laplace-Experiment sind alle Ergebnisse gleich wahrscheinlich. Die Wahrscheinlichkeit eines Ereignisses A berechnet sich als: P(A) = |A| / |Ω| (günstige Fälle / alle möglichen Fälle).
+  </div>
+  <div class="formula-block">
+   <div class="f-label">Laplace-Wahrscheinlichkeit</div>
+   <div class="f-main">P(A) = Anzahl günstiger Ergebnisse / Anzahl aller Ergebnisse</div>
+  </div>
+  <div class="example-block">
+   <div class="ex-head">📌 Würfel: Wie groß ist P(gerade Zahl)?</div>
+   <div class="ex-step"><div class="ex-num">1</div><div class="ex-text">Alle möglichen Ergebnisse: {1, 2, 3, 4, 5, 6} → 6 Ergebnisse</div></div>
+   <div class="ex-step"><div class="ex-num">2</div><div class="ex-text">Günstige Ergebnisse (gerade): {2, 4, 6} → 3 Ergebnisse</div></div>
+   <div class="ex-step"><div class="ex-num">3</div><div class="ex-text">P(gerade) = 3/6 = <b>0,5 = 50 %</b></div></div>
+  </div>
+  <div class="explain-box explain-adv adv-only">
+   <strong>🔵 Komplementregel</strong>
+   P(Ā) = 1 − P(A)<br>
+   Beispiel: P(keine 6) = 1 − 1/6 = 5/6 ≈ 0,833
+  </div>
+ </div>
+
+ <!-- 8. Baumdiagramme -->
+ <div class="card">
+  <h2>🌳 Baumdiagramme</h2>
+  <div class="explain-box explain-easy easy-only">
+   <strong>🟢 Was ist ein Baumdiagramm?</strong>
+   Ein Baumdiagramm ist wie eine Karte für alle möglichen Wege eines Zufallsexperiments. Jeder Ast steht für ein mögliches Ergebnis. Du folgst einem Ast nach dem anderen, bis du zum Endergebnis kommst.
+  </div>
+  <div class="explain-box explain-adv adv-only">
+   <strong>🔵 Fachlich</strong>
+   Baumdiagramme veranschaulichen mehrstufige Zufallsexperimente. An jedem Knoten steht die bedingte Wahrscheinlichkeit des jeweiligen Astes. Die Astwahrscheinlichkeiten an jeder Verzweigung summieren sich zu 1.
+  </div>
+  <!-- SVG Baumdiagramm (2 Münzwürfe) -->
+  <p style="font-size:.88rem;color:var(--muted);margin-bottom:.6rem">Beispiel: Zwei Münzwürfe (K = Kopf, Z = Zahl)</p>
+  <svg class="tree-svg" viewBox="0 0 500 260" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,sans-serif" font-size="13">
+   <!-- Äste 1. Ebene -->
+   <line x1="60" y1="130" x2="180" y2="70"  stroke="#1a56db" stroke-width="2"/>
+   <line x1="60" y1="130" x2="180" y2="190" stroke="#1a56db" stroke-width="2"/>
+   <!-- Äste 2. Ebene links -->
+   <line x1="180" y1="70"  x2="310" y2="40"  stroke="#0d9d58" stroke-width="2"/>
+   <line x1="180" y1="70"  x2="310" y2="100" stroke="#0d9d58" stroke-width="2"/>
+   <!-- Äste 2. Ebene rechts -->
+   <line x1="180" y1="190" x2="310" y2="160" stroke="#dc2626" stroke-width="2"/>
+   <line x1="180" y1="190" x2="310" y2="220" stroke="#dc2626" stroke-width="2"/>
+   <!-- Knoten -->
+   <circle cx="60"  cy="130" r="18" fill="#1a56db"/><text x="60"  y="134" text-anchor="middle" fill="white" font-weight="700">Start</text>
+   <circle cx="180" cy="70"  r="16" fill="#1a56db"/><text x="180" y="74"  text-anchor="middle" fill="white" font-weight="700">K</text>
+   <circle cx="180" cy="190" r="16" fill="#1a56db"/><text x="180" y="194" text-anchor="middle" fill="white" font-weight="700">Z</text>
+   <circle cx="310" cy="40"  r="14" fill="#0d9d58"/><text x="310" y="44"  text-anchor="middle" fill="white" font-weight="700">K</text>
+   <circle cx="310" cy="100" r="14" fill="#0d9d58"/><text x="310" y="104" text-anchor="middle" fill="white" font-weight="700">Z</text>
+   <circle cx="310" cy="160" r="14" fill="#dc2626"/><text x="310" y="164" text-anchor="middle" fill="white" font-weight="700">K</text>
+   <circle cx="310" cy="220" r="14" fill="#dc2626"/><text x="310" y="224" text-anchor="middle" fill="white" font-weight="700">Z</text>
+   <!-- Wahrscheinlichkeiten -->
+   <text x="115" y="90"  fill="#1a56db" font-weight="600">½</text>
+   <text x="115" y="170" fill="#1a56db" font-weight="600">½</text>
+   <text x="240" y="55"  fill="#0d9d58" font-weight="600">½</text>
+   <text x="240" y="97"  fill="#0d9d58" font-weight="600">½</text>
+   <text x="240" y="155" fill="#dc2626" font-weight="600">½</text>
+   <text x="240" y="215" fill="#dc2626" font-weight="600">½</text>
+   <!-- Ergebnisse -->
+   <text x="335" y="44"  fill="#555" font-weight="600">KK → ¼</text>
+   <text x="335" y="104" fill="#555" font-weight="600">KZ → ¼</text>
+   <text x="335" y="164" fill="#555" font-weight="600">ZK → ¼</text>
+   <text x="335" y="224" fill="#555" font-weight="600">ZZ → ¼</text>
+  </svg>
+  <div class="explain-box explain-adv adv-only">
+   <strong>🔵 Wichtig: Ohne vs. mit Zurücklegen</strong>
+   <b>Mit Zurücklegen:</b> Die Wahrscheinlichkeiten ändern sich nicht (unabhängige Ereignisse).<br>
+   <b>Ohne Zurücklegen:</b> Die Wahrscheinlichkeiten ändern sich nach jedem Schritt (bedingte Wahrscheinlichkeit).
+  </div>
+ </div>
+
+ <!-- 9. Pfadregel -->
+ <div class="card">
+  <h2>🔗 Pfadregel & Additionssatz</h2>
+  <div class="explain-box explain-easy easy-only">
+   <strong>🟢 Pfadregel einfach</strong>
+   Wenn du im Baumdiagramm einem Ast von Anfang bis Ende folgst, <b>multiplizierst</b> du alle Wahrscheinlichkeiten auf diesem Weg.<br><br>
+   <b>Additionssatz:</b> Wenn du mehrere verschiedene Äste zusammenzählen willst (z. B. "genau einmal Kopf"), <b>addierst</b> du die Pfadwahrscheinlichkeiten.
+  </div>
+  <div class="explain-box explain-adv adv-only">
+   <strong>🔵 Fachliche Formulierung</strong>
+   <b>Multiplikationssatz (Pfadregel):</b> P(A ∩ B) = P(A) · P(B|A)<br>
+   Bei unabhängigen Ereignissen gilt: P(A ∩ B) = P(A) · P(B)<br><br>
+   <b>Additionssatz:</b> P(A ∪ B) = P(A) + P(B) − P(A ∩ B)<br>
+   Bei disjunkten Ereignissen (A ∩ B = ∅): P(A ∪ B) = P(A) + P(B)
+  </div>
+  <div class="formula-block">
+   <div class="f-label">Pfadregel (Multiplikationssatz)</div>
+   <div class="f-main">P(A ∩ B) = P(A) · P(B|A)</div>
+   <div class="f-note">Pfadwahrscheinlichkeit = Produkt der einzelnen Astwahrscheinlichkeiten</div>
+  </div>
+  <div class="formula-block adv-only">
+   <div class="f-label">Additionssatz (disjunkte Ereignisse)</div>
+   <div class="f-main">P(A oder B) = P(A) + P(B)</div>
+   <div class="f-note">Summe aller günstigen Pfadwahrscheinlichkeiten addieren</div>
+  </div>
+  <div class="example-block">
+   <div class="ex-head">📌 Beispiel: Zwei Münzwürfe — P(genau 1× Kopf)?</div>
+   <div class="ex-step"><div class="ex-num">1</div><div class="ex-text">Günstiger Pfad 1: K dann Z → ½ · ½ = <b>¼</b></div></div>
+   <div class="ex-step"><div class="ex-num">2</div><div class="ex-text">Günstiger Pfad 2: Z dann K → ½ · ½ = <b>¼</b></div></div>
+   <div class="ex-step"><div class="ex-num">3</div><div class="ex-text">Addieren: ¼ + ¼ = <b>½ = 0,5 = 50 %</b></div></div>
+  </div>
+  <div class="example-block adv-only">
+   <div class="ex-head">📌 Fortgeschritten: Urne mit 3 roten, 2 blauen Kugeln — ohne Zurücklegen, 2 Züge → P(beide rot)?</div>
+   <div class="ex-step"><div class="ex-num">1</div><div class="ex-text">P(1. Zug rot) = 3/5</div></div>
+   <div class="ex-step"><div class="ex-num">2</div><div class="ex-text">P(2. Zug rot | 1. rot) = 2/4 = ½ (eine rote Kugel weniger!)</div></div>
+   <div class="ex-step"><div class="ex-num">3</div><div class="ex-text">P(beide rot) = 3/5 · 2/4 = 6/20 = <b>3/10 = 0,3 = 30 %</b></div></div>
+  </div>
+ </div>
+
+ <!-- 10. Gesetz der großen Zahlen -->
+ <div class="card">
+  <h2>📈 Gesetz der großen Zahlen</h2>
+  <div class="explain-box explain-easy easy-only">
+   <strong>🟢 Einfach</strong>
+   Je öfter du einen Würfel wirfst, desto näher kommt die relative Häufigkeit jeder Seite an 1/6 (≈ 16,7 %). Bei 10 Würfen kann es noch sehr ungleichmäßig sein — bei 10.000 Würfen ist es fast genau gleichmäßig.
+  </div>
+  <div class="explain-box explain-adv adv-only">
+   <strong>🔵 Fachlich: Schwaches Gesetz der großen Zahlen</strong>
+   Für eine Folge unabhängiger, identisch verteilter Zufallsvariablen konvergiert der Stichprobenmittelwert in Wahrscheinlichkeit gegen den Erwartungswert μ, wenn n → ∞ geht.
+  </div>
+  <div class="merkkarte">
+   <h4>⭐ Merke</h4>
+   <p>Relative Häufigkeit ≈ Wahrscheinlichkeit (bei vielen Versuchen). Aber: Jeder einzelne Versuch bleibt zufällig — das Gesetz gilt nur im Durchschnitt vieler Versuche!</p>
+  </div>
+ </div>
+
+</div><!-- end #grundlagen -->
+
+<!-- ══════════════════ LERNEN ══════════════════ -->
 <div id="lernen" class="page">
- <div class="card"><h2>Mittelwert‑Rechner</h2><input id="calcData" style="width:100%" placeholder="z.B. 2,3,1,4,2"><br><br><button class="btn" onclick="calcStats()">Berechnen</button><div id="calcOut"></div></div>
- <div class="card"><h2>Median‑Erklärung</h2><p>Der Median ist der mittlere Wert einer sortierten Datenreihe.</p></div>
-</div>
 
+ <!-- Schwierigkeits-Toggle -->
+ <div class="level-toggle">
+  <span>Niveau:</span>
+  <button class="toggle-btn on"  id="ll-easy" onclick="setLevel('easy','ll')">🟢 Einfach</button>
+  <button class="toggle-btn off" id="ll-adv"  onclick="setLevel('adv','ll')">🔵 Fortgeschritten</button>
+ </div>
+
+ <!-- Themen-Tabs -->
+ <div class="learn-tabs">
+  <button class="learn-tab active" onclick="showLearnTab('lt-calc')">🔢 Rechner</button>
+  <button class="learn-tab" onclick="showLearnTab('lt-haeufig')">📊 Häufigkeit</button>
+  <button class="learn-tab" onclick="showLearnTab('lt-mittel')">➕ Mittelwert</button>
+  <button class="learn-tab" onclick="showLearnTab('lt-median')">📏 Median</button>
+  <button class="learn-tab" onclick="showLearnTab('lt-baum')">🌳 Baumdiagramm</button>
+  <button class="learn-tab" onclick="showLearnTab('lt-spick')">📋 Spickzettel</button>
+ </div>
+
+ <!-- TAB: Rechner -->
+ <div id="lt-calc" class="learn-section active">
+  <div class="calc-box card">
+   <h3>🔢 Statistik-Rechner – Alle Kennwerte auf einmal</h3>
+   <p style="font-size:.88rem;color:var(--muted);margin-bottom:.9rem">Zahlen durch Komma oder Leerzeichen trennen:</p>
+   <div class="calc-input">
+    <input id="calcData" placeholder="z.B. 4, 7, 2, 9, 3, 7, 5, 2" style="flex:1;min-width:200px">
+    <button class="btn" onclick="calcStatsDetailed()">📊 Berechnen</button>
+   </div>
+   <div id="calcOut" class="calc-result"></div>
+  </div>
+
+  <div class="calc-box card" style="margin-top:1.2rem">
+   <h3>📐 Häufigkeits-Rechner</h3>
+   <p style="font-size:.88rem;color:var(--muted);margin-bottom:.9rem">Wie groß ist die relative Häufigkeit?</p>
+   <div class="calc-input">
+    <input id="hf-event" type="number" placeholder="Anzahl Ereignisse" style="width:160px">
+    <input id="hf-total" type="number" placeholder="Gesamtanzahl n" style="width:160px">
+    <button class="btn" onclick="calcHaeufigkeit()">Berechnen</button>
+   </div>
+   <div id="hf-out" class="calc-result"></div>
+  </div>
+
+  <div class="calc-box card" style="margin-top:1.2rem">
+   <h3>🌳 Pfadwahrscheinlichkeits-Rechner</h3>
+   <p style="font-size:.88rem;color:var(--muted);margin-bottom:.9rem">Wahrscheinlichkeiten des Pfades mit Komma trennen (z. B. 0.5, 0.3, 0.25):</p>
+   <div class="calc-input">
+    <input id="path-input" placeholder="z.B. 0.5, 0.3" style="flex:1">
+    <button class="btn" onclick="calcPath()">Berechnen</button>
+   </div>
+   <div id="path-out" class="calc-result"></div>
+  </div>
+ </div>
+
+ <!-- TAB: Häufigkeit -->
+ <div id="lt-haeufig" class="learn-section">
+  <div class="card">
+   <h3>📊 Schritt-für-Schritt: Häufigkeitstabelle erstellen</h3>
+   <div class="explain-box explain-easy easy-only">
+    <strong>🟢 Einfach</strong>
+    Du hast Rohdaten? Kein Problem! Zähl einfach, wie oft jeder Wert vorkommt, und füll die Tabelle aus.
+   </div>
+   <div class="steps-box">
+    <div class="step-item"><div class="step-badge">1</div><div class="step-body"><b>Urliste aufschreiben</b> — alle Daten so wie sie kamen</div></div>
+    <div class="step-item"><div class="step-badge">2</div><div class="step-body"><b>Mögliche Werte bestimmen</b> — welche verschiedenen Werte gibt es?</div></div>
+    <div class="step-item"><div class="step-badge">3</div><div class="step-body"><b>Strichliste führen</b> — jeden Datenwert beim richtigen Wert abhaken</div></div>
+    <div class="step-item"><div class="step-badge">4</div><div class="step-body"><b>Absolute Häufigkeit H</b> — Striche zählen</div></div>
+    <div class="step-item"><div class="step-badge">5</div><div class="step-body"><b>Relative Häufigkeit h</b> — H geteilt durch n (Gesamtanzahl)</div></div>
+    <div class="step-item"><div class="step-badge">6</div><div class="step-body"><b>Kontrolle</b> — Summe aller H = n, Summe aller h = 1</div></div>
+   </div>
+   <div class="mini-quiz">
+    <p>🧠 Mini-Quiz: Was ist die relative Häufigkeit, wenn Ereignis A genau 15× bei 60 Versuchen auftritt?</p>
+    <div class="mq-opts" id="mq1-opts">
+     <button class="mq-btn" onclick="mq('mq1',this,'wrong')">A) 0,40</button>
+     <button class="mq-btn" onclick="mq('mq1',this,'correct')">B) 0,25</button>
+     <button class="mq-btn" onclick="mq('mq1',this,'wrong')">C) 4,00</button>
+     <button class="mq-btn" onclick="mq('mq1',this,'wrong')">D) 0,15</button>
+    </div>
+    <div class="mq-feedback" id="mq1-fb"></div>
+   </div>
+  </div>
+  <div class="card adv-only">
+   <h3>🔵 Kumulierte Häufigkeit</h3>
+   <p style="font-size:.9rem;line-height:1.7">Die kumulierte (aufaddierte) Häufigkeit gibt an, wie viele Werte <b>höchstens</b> einen bestimmten Wert erreichen. Man addiert die absoluten (oder relativen) Häufigkeiten von unten auf.</p>
+   <div class="example-block">
+    <div class="ex-head">📌 Beispiel: Schuhgrößen (aus Grundlagen-Tabelle)</div>
+    <div style="overflow-x:auto">
+    <table class="data-table">
+     <thead><tr><th>Größe</th><th>abs. H</th><th>rel. h</th><th>kum. H</th><th>kum. h</th></tr></thead>
+     <tbody>
+      <tr><td>38</td><td>6</td><td>0,24</td><td>6</td><td>0,24</td></tr>
+      <tr><td>39</td><td>4</td><td>0,16</td><td>10</td><td>0,40</td></tr>
+      <tr><td>40</td><td>7</td><td>0,28</td><td>17</td><td>0,68</td></tr>
+      <tr><td>41</td><td>4</td><td>0,16</td><td>21</td><td>0,84</td></tr>
+      <tr><td>42</td><td>3</td><td>0,12</td><td>24</td><td>0,96</td></tr>
+      <tr><td>43</td><td>2</td><td>0,08</td><td>25</td><td>1,00</td></tr>
+     </tbody>
+    </table>
+    </div>
+    <p style="font-size:.85rem;color:var(--muted);margin-top:.5rem">Ablesen: 68 % der Schüler haben Größe 40 oder kleiner (kum. h bei 40 = 0,68).</p>
+   </div>
+  </div>
+ </div>
+
+ <!-- TAB: Mittelwert -->
+ <div id="lt-mittel" class="learn-section">
+  <div class="card">
+   <h3>➕ Mittelwert — Schritt für Schritt</h3>
+   <div class="explain-box explain-easy easy-only">
+    <strong>🟢 Goldene Regel</strong>
+    <b>Alles addieren, dann teilen!</b><br>
+    Egal wie viele Zahlen — erst alle zusammenzählen, dann durch die Anzahl der Zahlen teilen.
+   </div>
+   <div class="formula-block">
+    <div class="f-label">Arithmetisches Mittel</div>
+    <div class="f-main">x̄ = (x₁ + x₂ + ... + xₙ) / n = Σxᵢ / n</div>
+   </div>
+   <div class="example-block">
+    <div class="ex-head">📌 Prüfungsaufgaben-Stil: Temperaturen in °C einer Woche: 12, 15, 9, 18, 14, 11, 16</div>
+    <div class="ex-step"><div class="ex-num">1</div><div class="ex-text">Summe: 12+15+9+18+14+11+16 = <b>95</b></div></div>
+    <div class="ex-step"><div class="ex-num">2</div><div class="ex-text">Anzahl n = <b>7</b></div></div>
+    <div class="ex-step"><div class="ex-num">3</div><div class="ex-text">x̄ = 95 / 7 ≈ <b>13,57 °C</b></div></div>
+   </div>
+   <div class="mini-quiz">
+    <p>🧠 Mini-Quiz: Was ist der Mittelwert von 8, 12, 4, 16, 10?</p>
+    <div class="mq-opts" id="mq2-opts">
+     <button class="mq-btn" onclick="mq('mq2',this,'wrong')">A) 11</button>
+     <button class="mq-btn" onclick="mq('mq2',this,'correct')">B) 10</button>
+     <button class="mq-btn" onclick="mq('mq2',this,'wrong')">C) 12</button>
+     <button class="mq-btn" onclick="mq('mq2',this,'wrong')">D) 9</button>
+    </div>
+    <div class="mq-feedback" id="mq2-fb"></div>
+   </div>
+   <div class="explain-box explain-adv adv-only" style="margin-top:1rem">
+    <strong>🔵 Gewichteter Mittelwert</strong>
+    Wenn verschiedene Werte unterschiedlich oft auftreten:<br>
+    x̄ = Σ(xᵢ · hᵢ) / Σhᵢ<br>
+    Beispiel: Note 1 (3×), Note 2 (7×), Note 3 (5×) → x̄ = (1·3 + 2·7 + 3·5) / 15 = 34/15 ≈ 2,27
+   </div>
+  </div>
+ </div>
+
+ <!-- TAB: Median -->
+ <div id="lt-median" class="learn-section">
+  <div class="card">
+   <h3>📏 Median — Schritt für Schritt</h3>
+   <div class="explain-box explain-easy easy-only">
+    <strong>🟢 Die 3 Schritte</strong>
+    <b>1. Sortieren</b> → <b>2. Mitte finden</b> → <b>3. Ablesen (oder Mitteln)</b><br><br>
+    Tipp: Streiche von beiden Seiten je eine Zahl weg, bis du in der Mitte ankommst!
+   </div>
+   <div class="formula-block">
+    <div class="f-label">Median bei ungerader Anzahl n</div>
+    <div class="f-main">Median = x_(n+1)/2   (der mittlere Wert)</div>
+   </div>
+   <div class="formula-block adv-only">
+    <div class="f-label">Median bei gerader Anzahl n</div>
+    <div class="f-main">Median = (x_n/2  +  x_(n/2)+1) / 2</div>
+    <div class="f-note">Durchschnitt der zwei mittleren Werte</div>
+   </div>
+   <div class="example-block">
+    <div class="ex-head">📌 Klassenarbeits-Noten: 3, 1, 4, 2, 5, 2, 3, 1, 4 (n=9)</div>
+    <div class="ex-step"><div class="ex-num">1</div><div class="ex-text">Sortieren: <b>1, 1, 2, 2, 3, 3, 4, 4, 5</b></div></div>
+    <div class="ex-step"><div class="ex-num">2</div><div class="ex-text">Position: (9+1)/2 = 5 → der 5. Wert</div></div>
+    <div class="ex-step"><div class="ex-num">3</div><div class="ex-text">Median = <b>3</b></div></div>
+   </div>
+   <div class="mini-quiz">
+    <p>🧠 Mini-Quiz: Median von 7, 2, 5, 8, 1, 4?</p>
+    <div class="mq-opts" id="mq3-opts">
+     <button class="mq-btn" onclick="mq('mq3',this,'wrong')">A) 5</button>
+     <button class="mq-btn" onclick="mq('mq3',this,'correct')">B) 4,5</button>
+     <button class="mq-btn" onclick="mq('mq3',this,'wrong')">C) 4</button>
+     <button class="mq-btn" onclick="mq('mq3',this,'wrong')">D) 6</button>
+    </div>
+    <div class="mq-feedback" id="mq3-fb"></div>
+   </div>
+   <div class="explain-box explain-adv adv-only" style="margin-top:1rem">
+    <strong>🔵 Warum ist der Median manchmal besser als der Mittelwert?</strong>
+    Jahresgehälter (in T€): 28, 30, 32, 35, 38, 250.<br>
+    Mittelwert = 413/6 ≈ <b>68,8 T€</b> (stark verzerrt durch den Ausreißer 250).<br>
+    Median = (32+35)/2 = <b>33,5 T€</b> — repräsentativer für die meisten Beschäftigten.
+   </div>
+  </div>
+ </div>
+
+ <!-- TAB: Baumdiagramm -->
+ <div id="lt-baum" class="learn-section">
+  <div class="card">
+   <h3>🌳 Baumdiagramme — Wie aufstellen?</h3>
+   <div class="explain-box explain-easy easy-only">
+    <strong>🟢 Checkliste für das Baumdiagramm</strong>
+    ✅ Wie viele Stufen hat das Experiment?<br>
+    ✅ Welche Ergebnisse sind auf jeder Stufe möglich?<br>
+    ✅ Summe aller Äste einer Stufe = 1?<br>
+    ✅ Pfad = Wahrscheinlichkeiten multiplizieren<br>
+    ✅ Gleiche Ereignisse = Pfade addieren
+   </div>
+   <div class="steps-box">
+    <div class="step-item"><div class="step-badge">1</div><div class="step-body"><b>Stufen festlegen:</b> Jeder Zufallsvorgang = eine Baumebene</div></div>
+    <div class="step-item"><div class="step-badge">2</div><div class="step-body"><b>Äste zeichnen:</b> Für jeden möglichen Ausgang einen Ast</div></div>
+    <div class="step-item"><div class="step-badge">3</div><div class="step-body"><b>Wahrscheinlichkeiten beschriften:</b> An jeden Ast seine P schreiben</div></div>
+    <div class="step-item"><div class="step-badge">4</div><div class="step-body"><b>Kontrollieren:</b> Alle Äste einer Verzweigung summieren = 1</div></div>
+    <div class="step-item"><div class="step-badge">5</div><div class="step-body"><b>Pfadwahrscheinlichkeit berechnen:</b> Alle Aste eines Pfades multiplizieren</div></div>
+    <div class="step-item"><div class="step-badge">6</div><div class="step-body"><b>Aufaddieren:</b> Alle Pfade mit gesuchtem Ereignis addieren</div></div>
+   </div>
+   <div class="example-block adv-only">
+    <div class="ex-head">📌 Fortgeschritten: Urne mit 4 roten (R) und 6 blauen (B) Kugeln, 2 Züge ohne Zurücklegen. P(mindestens 1 rot)?</div>
+    <div class="ex-step"><div class="ex-num">1</div><div class="ex-text">P(R₁) = 4/10, P(B₁) = 6/10</div></div>
+    <div class="ex-step"><div class="ex-num">2</div><div class="ex-text">P(R₂|R₁) = 3/9, P(B₂|R₁) = 6/9, P(R₂|B₁) = 4/9, P(B₂|B₁) = 5/9</div></div>
+    <div class="ex-step"><div class="ex-num">3</div><div class="ex-text">P(RR) = 4/10 · 3/9 = 12/90 &nbsp; P(RB) = 4/10 · 6/9 = 24/90 &nbsp; P(BR) = 6/10 · 4/9 = 24/90</div></div>
+    <div class="ex-step"><div class="ex-num">4</div><div class="ex-text">P(mind. 1 rot) = P(RR)+P(RB)+P(BR) = 60/90 = <b>2/3 ≈ 66,7 %</b></div></div>
+    <div class="ex-step"><div class="ex-num">✓</div><div class="ex-text">Kontrolle via Komplement: 1 − P(BB) = 1 − (6/10 · 5/9) = 1 − 30/90 = 60/90 ✅</div></div>
+   </div>
+   <div class="mini-quiz">
+    <p>🧠 Mini-Quiz: P(A) = 0,4 und P(B|A) = 0,5. Was ist P(A ∩ B)?</p>
+    <div class="mq-opts" id="mq4-opts">
+     <button class="mq-btn" onclick="mq('mq4',this,'wrong')">A) 0,9</button>
+     <button class="mq-btn" onclick="mq('mq4',this,'correct')">B) 0,2</button>
+     <button class="mq-btn" onclick="mq('mq4',this,'wrong')">C) 0,5</button>
+     <button class="mq-btn" onclick="mq('mq4',this,'wrong')">D) 0,4</button>
+    </div>
+    <div class="mq-feedback" id="mq4-fb"></div>
+   </div>
+  </div>
+ </div>
+
+ <!-- TAB: Spickzettel -->
+ <div id="lt-spick" class="learn-section">
+  <div class="card">
+   <h3>📋 Formel-Spickzettel – alle Formeln auf einen Blick</h3>
+   <div class="cheatsheet">
+    <div class="cheat-item">
+     <h4>📊 Relative Häufigkeit</h4>
+     <div class="cheat-formula">hᵣ = H(A) / n</div>
+     <div class="cheat-desc">H(A) = Anzahl des Ereignisses A<br>n = Gesamtanzahl der Versuche<br>Ergebnis: immer zwischen 0 und 1</div>
+    </div>
+    <div class="cheat-item">
+     <h4>➕ Arithmetisches Mittel</h4>
+     <div class="cheat-formula">x̄ = Σxᵢ / n</div>
+     <div class="cheat-desc">Alle Werte addieren, durch Anzahl teilen.<br>Empfindlich gegenüber Ausreißern!</div>
+    </div>
+    <div class="cheat-item">
+     <h4>📏 Median (ungerade n)</h4>
+     <div class="cheat-formula">x_(n+1)/2</div>
+     <div class="cheat-desc">Zuerst sortieren! Dann den Wert an Position (n+1)/2 ablesen.</div>
+    </div>
+    <div class="cheat-item">
+     <h4>📏 Median (gerade n)</h4>
+     <div class="cheat-formula">(x_n/2 + x_n/2+1) / 2</div>
+     <div class="cheat-desc">Durchschnitt der beiden mittleren Werte.</div>
+    </div>
+    <div class="cheat-item">
+     <h4>↔ Spannweite</h4>
+     <div class="cheat-formula">R = x_max − x_min</div>
+     <div class="cheat-desc">Größter minus kleinster Wert.<br>Einfachstes Streuungsmaß.</div>
+    </div>
+    <div class="cheat-item">
+     <h4>🎲 Laplace-Wahrscheinlichkeit</h4>
+     <div class="cheat-formula">P(A) = |A| / |Ω|</div>
+     <div class="cheat-desc">Günstige Fälle geteilt durch alle möglichen Fälle.</div>
+    </div>
+    <div class="cheat-item">
+     <h4>🔗 Pfadregel</h4>
+     <div class="cheat-formula">P(A ∩ B) = P(A) · P(B|A)</div>
+     <div class="cheat-desc">Wahrscheinlichkeiten entlang eines Pfades multiplizieren.</div>
+    </div>
+    <div class="cheat-item">
+     <h4>➕ Additionssatz (disjunkt)</h4>
+     <div class="cheat-formula">P(A ∪ B) = P(A) + P(B)</div>
+     <div class="cheat-desc">Günstige Pfade addieren. Nur wenn A und B sich ausschließen!</div>
+    </div>
+    <div class="cheat-item">
+     <h4>🔄 Komplementregel</h4>
+     <div class="cheat-formula">P(Ā) = 1 − P(A)</div>
+     <div class="cheat-desc">Sehr nützlich bei "mindestens"-Aufgaben!</div>
+    </div>
+    <div class="cheat-item adv-only">
+     <h4>🔵 Bedingte Wahrscheinlichkeit</h4>
+     <div class="cheat-formula">P(B|A) = P(A∩B) / P(A)</div>
+     <div class="cheat-desc">Wahrscheinlichkeit von B, gegeben dass A eingetreten ist.</div>
+    </div>
+    <div class="cheat-item adv-only">
+     <h4>🔵 Allg. Additionssatz</h4>
+     <div class="cheat-formula">P(A∪B) = P(A)+P(B)−P(A∩B)</div>
+     <div class="cheat-desc">Wenn A und B sich überschneiden können.</div>
+    </div>
+   </div>
+  </div>
+
+  <div class="card" style="margin-top:1.2rem">
+   <h3>⚠️ Häufigste Fehler & wie du sie vermeidest</h3>
+   <div class="explain-box explain-warn">
+    <strong>❌ Fehler 1: Vergessen zu sortieren beim Median</strong>
+    Median geht NUR aus einer sortierten Liste! Immer zuerst sortieren!
+   </div>
+   <div class="explain-box explain-warn">
+    <strong>❌ Fehler 2: Addition statt Multiplikation bei Pfadregel</strong>
+    Innerhalb eines Pfades MULTIPLIZIEREN, verschiedene Pfade ADDIEREN.
+   </div>
+   <div class="explain-box explain-warn">
+    <strong>❌ Fehler 3: Falsch herum bei relativer Häufigkeit</strong>
+    Immer: Ereignis ÷ Gesamt (nicht Gesamt ÷ Ereignis!)
+   </div>
+   <div class="explain-box explain-warn">
+    <strong>❌ Fehler 4: Runden zu früh</strong>
+    Während der Rechnung keine Zwischenergebnisse runden — erst das Endergebnis runden.
+   </div>
+  </div>
+ </div>
+
+</div><!-- end #lernen -->
+
+<!-- ══════════════════ SIMULATION ══════════════════ -->
 <div id="simulation" class="page">
- <div class="card"><h2>🎲 Würfel‑Simulation (1000 Würfe)</h2><button class="btn" onclick="simDice()">Start</button><canvas id="dice" width="520" height="240" style="max-width:100%;display:block"></canvas></div>
- <div class="card"><h2>📈 Zufall & Gesetz der großen Zahlen</h2><p>Je mehr Versuche, desto näher an der theoretischen Wahrscheinlichkeit.</p></div>
+ <div class="card"><h2>🎲 Würfel‑Simulation (1000 Würfe)</h2><button class="btn" onclick="simDice()">Start</button><canvas id="dice" width="520" height="240" style="max-width:100%;display:block;margin-top:1rem"></canvas></div>
+ <div class="card"><h2>📈 Zufall & Gesetz der großen Zahlen</h2><p>Je mehr Versuche, desto näher an der theoretischen Wahrscheinlichkeit (1/6 ≈ 16,7 % pro Würfelseite).</p></div>
 </div>
 
+<!-- ══════════════════ RECHNEN ══════════════════ -->
 <div id="rechnen" class="page">
  <div class="grid">
-  <div class="card"><h3>Relative Häufigkeit</h3><p id="rq1"></p><input id="ra1" type="number" step="0.01"><br><button class="btn" onclick="checkR1()">Prüfen</button><div id="rf1"></div></div>
-  <div class="card"><h3>Mittelwert</h3><p id="rq2"></p><input id="ra2" type="number" step="0.01"><br><button class="btn" onclick="checkR2()">Prüfen</button><div id="rf2"></div></div>
-  <div class="card"><h3>Median</h3><p id="rq3"></p><input id="ra3" type="number" step="0.5"><br><button class="btn" onclick="checkR3()">Prüfen</button><div id="rf3"></div></div>
-  <div class="card"><h3>Pfadregel</h3><p id="rq4"></p><input id="ra4" type="number" step="0.01"><br><button class="btn" onclick="checkR4()">Prüfen</button><div id="rf4"></div></div>
+  <div class="card"><h3>Relative Häufigkeit</h3><p id="rq1"></p><input id="ra1" type="number" step="0.01"><br><button class="btn" onclick="checkR1()">Prüfen</button><div id="rf1" class="feedback"></div></div>
+  <div class="card"><h3>Mittelwert</h3><p id="rq2"></p><input id="ra2" type="number" step="0.01"><br><button class="btn" onclick="checkR2()">Prüfen</button><div id="rf2" class="feedback"></div></div>
+  <div class="card"><h3>Median</h3><p id="rq3"></p><input id="ra3" type="number" step="0.5"><br><button class="btn" onclick="checkR3()">Prüfen</button><div id="rf3" class="feedback"></div></div>
+  <div class="card"><h3>Pfadregel</h3><p id="rq4"></p><input id="ra4" type="number" step="0.01"><br><button class="btn" onclick="checkR4()">Prüfen</button><div id="rf4" class="feedback"></div></div>
  </div>
- <button class="btn" onclick="newRechnen()">🔄 Neue Aufgaben</button>
+ <button class="btn" onclick="newRechnen()" style="margin-top:.5rem">🔄 Neue Aufgaben</button>
 </div>
 
+<!-- ══════════════════ QUIZ ══════════════════ -->
 <div id="quiz" class="page">
- <div class="card"><h2>Quiz</h2><p id="quizQ"></p><button class="btn" onclick="quizAns(true)">Richtig</button> <button class="btn alt" onclick="quizAns(false)">Falsch</button><p id="quizF"></p></div>
+ <div class="card"><h2>🧠 Quiz</h2><p id="quizQ"></p><button class="btn" onclick="quizAns(true)">✅ Richtig</button> <button class="btn alt" onclick="quizAns(false)">❌ Falsch</button><p id="quizF" style="margin-top:.8rem;font-weight:700;min-height:1.2rem"></p></div>
 </div>
 
+<!-- ══════════════════ CHALLENGE ══════════════════ -->
 <div id="challenge" class="page">
  <div class="card">
   <h2>🔥 Klassenarbeits‑Challenge</h2>
   <p>10 Aufgaben – Zeit läuft – Punkte zählen.</p>
-
-  <!-- Start-Screen -->
-  <div id="ch-start">
-   <button class="btn" onclick="startChallenge()">▶ Challenge starten</button>
-  </div>
-
-  <!-- Spiel-Screen -->
+  <div id="ch-start"><button class="btn" onclick="startChallenge()">▶ Challenge starten</button></div>
   <div id="ch-game" style="display:none">
    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem">
     <span id="ch-aufg" style="font-weight:700;color:var(--muted)">Aufgabe 1 / 10</span>
@@ -107,8 +870,6 @@
    <div id="ch-antworten" style="display:flex;flex-direction:column;gap:.6rem"></div>
    <p id="ch-feedback" style="margin-top:.8rem;font-weight:700;min-height:1.4rem"></p>
   </div>
-
-  <!-- Ergebnis-Screen -->
   <div id="ch-result" style="display:none;text-align:center">
    <h3 id="ch-score-title"></h3>
    <p id="ch-score-text"></p>
@@ -117,6 +878,7 @@
  </div>
 </div>
 
+<!-- ══════════════════ IMPRESSUM ══════════════════ -->
 <div id="imprint" class="page">
   <div class="page-header">
     <h1>Impressum</h1>
@@ -142,7 +904,7 @@
   </div>
   <div class="imprint-card">
     <h2>Haftungsausschluss</h2>
-    <p style="font-size:15px;line-height:1.7;color:#334155">Diese Website wurde im Rahmen eines Schulprojektes der 10. Klasse erstellt. Die Inhalte wurden mithilfe von KI generiert und anschließend von den Autoren geprüft und angepasst. Für die vollständige inhaltliche Richtigkeit wird keine Gewähr übernommen. Lehrpersonen beachten bitte den entsprechenden Hinweis im Quellenverzeichnis.</p>
+    <p style="font-size:15px;line-height:1.7;color:#334155">Diese Website wurde im Rahmen eines Schulprojektes der 10. Klasse erstellt. Die Inhalte wurden mithilfe von KI generiert und anschließend von den Autoren geprüft und angepasst. Für die vollständige inhaltliche Richtigkeit wird keine Gewähr übernommen.</p>
     <p style="font-size:14px;color:var(--muted);margin-top:1rem">Bearbeitet durch Daris Beckovic &amp; Gabrijel Guzmic · Datum: 16.04.2026</p>
   </div>
 </div>
@@ -152,39 +914,31 @@
 </footer>
 
 <script>
-// Cache DOM references once at startup
+// ── DOM-Cache ──
 const $ = id => document.getElementById(id);
-const pages = document.querySelectorAll('.page');
+const pages   = document.querySelectorAll('.page');
 const navBtns = document.querySelectorAll('.nav-links button');
 
-function go(id, cardEl) {
+// ── Navigation ──
+function go(id) {
   pages.forEach(p => p.classList.remove('active'));
   navBtns.forEach(b => b.classList.remove('active'));
   $(id).classList.add('active');
-  // Mark active nav button
   const match = [...navBtns].find(b => b.getAttribute('onclick') && b.getAttribute('onclick').includes("'" + id + "'"));
   if (match) match.classList.add('active');
-  else if (event && event.target && event.target.closest('.nav-links')) event.target.classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
 }
-
 function goMobile(id) {
-  pages.forEach(p => p.classList.remove('active'));
-  navBtns.forEach(b => b.classList.remove('active'));
-  $(id).classList.add('active');
-  const match = [...navBtns].find(b => b.getAttribute('onclick') && b.getAttribute('onclick').includes("'" + id + "'"));
-  if (match) match.classList.add('active');
+  go(id);
   $('mobileMenu').classList.remove('open');
   $('mobileMenu').previousElementSibling.querySelector('.hamburger').classList.remove('open');
 }
-
 function toggleMenu() {
   const menu = $('mobileMenu');
-  const ham = menu.previousElementSibling.querySelector('.hamburger');
+  const ham  = menu.previousElementSibling.querySelector('.hamburger');
   menu.classList.toggle('open');
   ham.classList.toggle('open');
 }
-
-// Close menu on outside click
 document.addEventListener('click', e => {
   const menu = $('mobileMenu');
   if (menu.classList.contains('open') && !e.target.closest('header')) {
@@ -193,21 +947,132 @@ document.addEventListener('click', e => {
   }
 });
 
-// --- Lernen ---
-function calcStats() {
-  const a = $('calcData').value.split(',').map(Number).filter(n => !isNaN(n));
-  if (!a.length) return;
-  const m = (a.reduce((x, y) => x + y, 0) / a.length).toFixed(2);
-  a.sort((x, y) => x - y);
-  const half = a.length >> 1;
-  const med = a.length & 1 ? a[half] : ((a[half - 1] + a[half]) / 2).toFixed(2);
-  $('calcOut').innerHTML = `Mittelwert: <b>${m}</b><br>Median: <b>${med}</b>`;
+// ── Schwierigkeits-Toggle ──
+// prefix 'gl' = Grundlagen, 'll' = Lernen
+function setLevel(level, prefix) {
+  if (level === 'adv') {
+    document.body.classList.add('adv');
+  } else {
+    document.body.classList.remove('adv');
+  }
+  // Update button styles in both toggles
+  ['gl','ll'].forEach(p => {
+    const eBtn = $(p + '-easy');
+    const aBtn = $(p + '-adv');
+    if (!eBtn || !aBtn) return;
+    if (level === 'adv') {
+      eBtn.classList.remove('on'); aBtn.classList.add('on');
+    } else {
+      aBtn.classList.remove('on'); eBtn.classList.add('on');
+    }
+  });
 }
 
-// --- Simulation ---
+// ── Lern-Tabs ──
+function showLearnTab(tabId) {
+  document.querySelectorAll('.learn-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.learn-tab').forEach(b => b.classList.remove('active'));
+  $(tabId).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ── Mini-Quiz ──
+function mq(id, btn, result) {
+  const opts = $(id + '-opts');
+  const fb   = $(id + '-fb');
+  if (opts.dataset.done) return;
+  opts.dataset.done = '1';
+  opts.querySelectorAll('.mq-btn').forEach(b => b.disabled = true);
+  btn.classList.add(result);
+  if (result === 'correct') {
+    fb.textContent = '✅ Richtig! Gut gemacht.';
+    fb.style.color = 'var(--green)';
+  } else {
+    btn.classList.add('wrong');
+    fb.textContent = '❌ Leider falsch — schau dir die Erklärung nochmal an.';
+    fb.style.color = 'var(--red)';
+    // Highlight correct button
+    opts.querySelectorAll('.mq-btn').forEach(b => {
+      if (b.dataset && b.getAttribute('onclick') && b.getAttribute('onclick').includes("'correct'")) {
+        b.classList.add('correct');
+      }
+    });
+  }
+}
+
+// ── Detaillierter Statistik-Rechner ──
+function calcStatsDetailed() {
+  const raw = $('calcData').value.replace(/\s+/g, ',');
+  const a = raw.split(/[,;]+/).map(Number).filter(n => !isNaN(n) && n !== '');
+  if (a.length < 2) { $('calcOut').innerHTML = '<span style="color:var(--red)">Mindestens 2 Zahlen eingeben!</span>'; $('calcOut').classList.add('show'); return; }
+  const sum = a.reduce((x,y) => x+y, 0);
+  const mean = (sum / a.length).toFixed(4);
+  const sorted = [...a].sort((x,y) => x-y);
+  const n = sorted.length;
+  const half = n >> 1;
+  const med = n & 1 ? sorted[half] : ((sorted[half-1] + sorted[half]) / 2);
+  // Modus
+  const freq = {};
+  a.forEach(v => freq[v] = (freq[v]||0)+1);
+  const maxF = Math.max(...Object.values(freq));
+  const modi = Object.keys(freq).filter(k => freq[k] === maxF).join(', ');
+  const spannweite = sorted[n-1] - sorted[0];
+  const out = $('calcOut');
+  out.innerHTML = `
+   <b style="color:var(--blue)">Ergebnisse für: ${a.join(', ')}</b>
+   <table class="data-table" style="margin-top:.7rem">
+    <tr><td style="text-align:left;font-weight:600">Anzahl n</td><td>${n}</td></tr>
+    <tr><td style="text-align:left;font-weight:600">Summe</td><td>${sum}</td></tr>
+    <tr><td style="text-align:left;font-weight:600">Mittelwert x̄</td><td><b style="color:var(--blue)">${parseFloat(mean).toFixed(2)}</b></td></tr>
+    <tr><td style="text-align:left;font-weight:600">Median</td><td><b style="color:var(--blue)">${med}</b></td></tr>
+    <tr><td style="text-align:left;font-weight:600">Modus</td><td>${modi} (${maxF}× vorkommend)</td></tr>
+    <tr><td style="text-align:left;font-weight:600">Minimum</td><td>${sorted[0]}</td></tr>
+    <tr><td style="text-align:left;font-weight:600">Maximum</td><td>${sorted[n-1]}</td></tr>
+    <tr><td style="text-align:left;font-weight:600">Spannweite R</td><td>${spannweite}</td></tr>
+    <tr><td style="text-align:left;font-weight:600">Sortiert</td><td style="font-size:.82rem">${sorted.join(' < ')}</td></tr>
+   </table>`;
+  out.classList.add('show');
+}
+
+// Kompatiblität mit altem calcStats()-Aufruf
+function calcStats() { calcStatsDetailed(); }
+
+// ── Häufigkeits-Rechner ──
+function calcHaeufigkeit() {
+  const h = parseFloat($('hf-event').value);
+  const n = parseFloat($('hf-total').value);
+  const out = $('hf-out');
+  if (isNaN(h) || isNaN(n) || n <= 0) { out.innerHTML = '<span style="color:var(--red)">Bitte gültige Zahlen eingeben!</span>'; out.classList.add('show'); return; }
+  if (h > n) { out.innerHTML = '<span style="color:var(--red)">Anzahl Ereignisse kann nicht größer als Gesamtanzahl sein!</span>'; out.classList.add('show'); return; }
+  const rel = (h/n).toFixed(4);
+  const pct = (h/n*100).toFixed(2);
+  out.innerHTML = `
+   <span class="res-val">Abs. Häufigkeit:</span> ${h}<br>
+   <span class="res-val">Rel. Häufigkeit:</span> ${rel}<br>
+   <span class="res-val">In Prozent:</span> ${pct} %<br>
+   <small style="color:var(--muted)">Rechnung: ${h} ÷ ${n} = ${rel}</small>`;
+  out.classList.add('show');
+}
+
+// ── Pfad-Rechner ──
+function calcPath() {
+  const vals = $('path-input').value.split(/[,;\s]+/).map(Number).filter(n => !isNaN(n));
+  const out = $('path-out');
+  if (vals.length < 2) { out.innerHTML = '<span style="color:var(--red)">Mindestens 2 Wahrscheinlichkeiten eingeben!</span>'; out.classList.add('show'); return; }
+  if (vals.some(v => v < 0 || v > 1)) { out.innerHTML = '<span style="color:var(--red)">Alle Wahrscheinlichkeiten müssen zwischen 0 und 1 liegen!</span>'; out.classList.add('show'); return; }
+  const prod = vals.reduce((a,b) => a*b, 1);
+  out.innerHTML = `
+   <span class="res-val">Pfadwahrscheinlichkeit:</span> ${prod.toFixed(6)}<br>
+   <small style="color:var(--muted)">Rechnung: ${vals.join(' × ')} = ${prod.toFixed(6)}</small><br>
+   <small style="color:var(--muted)">In Prozent: ${(prod*100).toFixed(4)} %</small>`;
+  out.classList.add('show');
+}
+
+// ── Simulation ──
 function simDice() {
   const canvas = $('dice');
   const c = canvas.getContext('2d');
+  const colors = ['#1a56db','#0d9d58','#d97706','#dc2626','#7c3aed','#0891b2'];
   const r = new Uint16Array(6);
   let i = 0;
   const t = setInterval(() => {
@@ -215,67 +1080,83 @@ function simDice() {
     c.clearRect(0, 0, 520, 240);
     for (let j = 0; j < 6; j++) {
       const h = r[j] * 0.2;
-      c.fillStyle = '#1a56db';
-      c.fillRect(60 + j * 70, 220 - h, 50, h);
-      c.fillText(j + 1, 85 + j * 70, 235);
+      c.fillStyle = colors[j];
+      c.beginPath();
+      c.roundRect ? c.roundRect(55 + j * 70, 220 - h, 50, h, 5) : c.fillRect(55 + j * 70, 220 - h, 50, h);
+      c.fill();
+      c.fillStyle = '#0f172a';
+      c.font = 'bold 14px DM Sans,sans-serif';
+      c.textAlign = 'center';
+      c.fillText(j + 1, 80 + j * 70, 238);
+      if (h > 15) {
+        c.fillStyle = '#fff';
+        c.font = '11px DM Sans,sans-serif';
+        c.fillText(r[j], 80 + j * 70, 218 - h);
+      }
     }
-    if (++i >= 1000) clearInterval(t);
+    if (++i >= 1000) { clearInterval(t); c.fillStyle='#0d9d58'; c.font='bold 13px DM Sans,sans-serif'; c.textAlign='center'; c.fillText('✅ 1000 Würfe abgeschlossen!', 260, 14); }
   }, 5);
 }
 
-// --- Rechnen ---
+// ── Rechnen ──
 let rh, rn, rm, med, p;
 const rnd = (a, b) => (Math.random() * (b - a + 1) | 0) + a;
 
 function newRechnen() {
-  rh = rnd(3, 40);
-  rn = rnd(40, 200);
-  $('rq1').textContent = `${rh} Erfolge bei ${rn} Versuchen. Berechne f.`;
-
+  rh = rnd(3, 40); rn = rnd(40, 200);
+  $('rq1').textContent = `${rh} Erfolge bei ${rn} Versuchen. Berechne die relative Häufigkeit hᵣ (2 Dezimalstellen).`;
   const a = Array.from({length: 7}, () => rnd(1, 50));
   rm = (a.reduce((x, y) => x + y, 0) / a.length).toFixed(2);
   $('rq2').textContent = `Mittelwert von: ${a.join(', ')}`;
-
   a.sort((x, y) => x - y);
   med = a.length & 1 ? a[3] : (a[2] + a[3]) / 2;
   $('rq3').textContent = `Median von: ${a.join(', ')}`;
-
   const x = rnd(2, 9), y = rnd(2, 9);
   p = ((x / 10) * (y / 10)).toFixed(2);
-  $('rq4').textContent = `P(A)=${x}/10 und P(B|A)=${y}/10`;
+  $('rq4').textContent = `P(A) = ${x}/10 und P(B|A) = ${y}/10 — berechne P(A ∩ B).`;
 }
 
 function out(id, a, u) {
   const f = $(id);
-  const ok = Math.abs(a - u) < 0.05;
-  f.textContent = ok ? '✅ Richtig' : '❌ ' + a;
+  const ok = Math.abs(a - u) < 0.055;
+  f.textContent = ok ? '✅ Richtig!' : `❌ Richtig wäre: ${a}`;
   f.className = 'feedback ' + (ok ? 'ok' : 'err');
 }
-
 function checkR1() { out('rf1', (rh / rn).toFixed(2), $('ra1').value); }
 function checkR2() { out('rf2', rm, $('ra2').value); }
 function checkR3() { out('rf3', med, $('ra3').value); }
 function checkR4() { out('rf4', p, $('ra4').value); }
-
 newRechnen();
 
-// --- Quiz ---
+// ── Quiz ──
 const quiz = [
-  {q: 'Die relative Häufigkeit liegt zwischen 0 und 1.', a: true},
-  {q: 'Der Median ist immer der Durchschnitt.', a: false}
+  {q: 'Die relative Häufigkeit liegt immer zwischen 0 und 1.', a: true},
+  {q: 'Der Median ist immer gleich dem Mittelwert.', a: false},
+  {q: 'Die Summe aller relativen Häufigkeiten ergibt immer 1.', a: true},
+  {q: 'Beim fairen Würfel ist P(6) = 1/6.', a: true},
+  {q: 'Der Modus ist der häufigste Wert im Datensatz.', a: true},
+  {q: 'Die Pfadwahrscheinlichkeit berechnet man durch Addition.', a: false},
+  {q: 'Beim Gesetz der großen Zahlen nähert sich die relative Häufigkeit der Wahrscheinlichkeit an.', a: true},
+  {q: 'Bei einem disjunkten Ereignis gilt: P(A∪B) = P(A)·P(B).', a: false},
+  {q: 'Die Spannweite ist Maximalwert minus Minimalwert.', a: true},
+  {q: 'P(Ā) = 1 − P(A) heißt Komplementregel.', a: true},
+  {q: 'Um den Median zu bestimmen muss man die Daten zuerst sortieren.', a: true},
+  {q: 'Absolute Häufigkeit und relative Häufigkeit sind dasselbe.', a: false},
 ];
-let qi = 0;
+let qi = 0, quizScore = 0;
 const quizQ = $('quizQ');
 const quizF = $('quizF');
-
 function quizAns(u) {
-  quizF.textContent = u === quiz[qi].a ? '✅ Richtig' : '❌ Falsch';
+  const correct = u === quiz[qi].a;
+  if (correct) quizScore++;
+  quizF.textContent = correct ? `✅ Richtig! (${quizScore}/${quiz.length} gesamt)` : `❌ Falsch – Richtig wäre: ${quiz[qi].a ? 'Richtig' : 'Falsch'}`;
+  quizF.style.color = correct ? 'var(--green)' : 'var(--red)';
   qi = (qi + 1) % quiz.length;
   quizQ.textContent = quiz[qi].q;
 }
 quizQ.textContent = quiz[0].q;
 
-// --- Challenge ---
+// ── Challenge ──
 let chTimer, chSekunden, chIndex, chPunkte, chFragen;
 
 function genChFragen() {
@@ -285,53 +1166,31 @@ function genChFragen() {
     if (typ === 0) {
       const h = rnd(3,40), n = rnd(40,200);
       const richtig = (h/n).toFixed(2);
-      const falsch1 = (h/n + 0.1).toFixed(2);
-      const falsch2 = (n/h).toFixed(2);
-      fragen.push({
-        frage: `${h} Erfolge bei ${n} Versuchen. Wie groß ist die relative Häufigkeit?`,
-        antworten: shuffle([richtig, falsch1, falsch2, (h/n - 0.05).toFixed(2)]),
-        richtig
-      });
+      fragen.push({ frage: `${h} Erfolge bei ${n} Versuchen. Wie groß ist hᵣ?`, antworten: shuffle([richtig,(h/n+0.1).toFixed(2),(n/h).toFixed(2),(h/n-0.05).toFixed(2)]), richtig });
     } else if (typ === 1) {
       const a = Array.from({length:5}, () => rnd(1,20));
       const richtig = (a.reduce((x,y)=>x+y,0)/a.length).toFixed(1);
-      fragen.push({
-        frage: `Mittelwert von: ${a.join(', ')}`,
-        antworten: shuffle([richtig, (parseFloat(richtig)+1).toFixed(1), (parseFloat(richtig)-1).toFixed(1), (parseFloat(richtig)+2).toFixed(1)]),
-        richtig
-      });
+      fragen.push({ frage: `Mittelwert von: ${a.join(', ')}`, antworten: shuffle([richtig,(parseFloat(richtig)+1).toFixed(1),(parseFloat(richtig)-1).toFixed(1),(parseFloat(richtig)+2).toFixed(1)]), richtig });
     } else if (typ === 2) {
       const a = Array.from({length:5}, () => rnd(1,20)).sort((x,y)=>x-y);
       const richtig = String(a[2]);
-      fragen.push({
-        frage: `Median von: ${a.join(', ')}`,
-        antworten: shuffle([richtig, String(a[1]), String(a[3]), String(a[0])]),
-        richtig
-      });
+      fragen.push({ frage: `Median von: ${a.join(', ')}`, antworten: shuffle([richtig,String(a[1]),String(a[3]),String(a[0])]), richtig });
     } else {
       const x = rnd(2,8), y = rnd(2,8);
       const richtig = ((x/10)*(y/10)).toFixed(2);
-      fragen.push({
-        frage: `P(A)=${x}/10, P(B|A)=${y}/10 – Pfadwahrscheinlichkeit P(A∩B)?`,
-        antworten: shuffle([richtig, ((x/10)+(y/10)).toFixed(2), (x/10).toFixed(2), (y/10).toFixed(2)]),
-        richtig
-      });
+      fragen.push({ frage: `P(A)=${x}/10, P(B|A)=${y}/10 – P(A∩B)?`, antworten: shuffle([richtig,((x/10)+(y/10)).toFixed(2),(x/10).toFixed(2),(y/10).toFixed(2)]), richtig });
     }
   }
   return fragen;
 }
 
 function shuffle(arr) {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.random() * (i+1) | 0;
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
+  for (let i = arr.length-1; i > 0; i--) { const j = Math.random()*(i+1)|0; [arr[i],arr[j]]=[arr[j],arr[i]]; }
   return arr;
 }
 
 function startChallenge() {
-  chIndex = 0; chPunkte = 0;
-  chFragen = genChFragen();
+  chIndex = 0; chPunkte = 0; chFragen = genChFragen();
   $('ch-start').style.display = 'none';
   $('ch-result').style.display = 'none';
   $('ch-game').style.display = 'block';
@@ -346,7 +1205,6 @@ function zeigeChFrage() {
   $('bar').style.width = (chIndex / chFragen.length * 100) + '%';
   $('ch-frage').textContent = f.frage;
   $('ch-feedback').textContent = '';
-
   const cont = $('ch-antworten');
   cont.innerHTML = '';
   f.antworten.forEach(a => {
@@ -356,25 +1214,17 @@ function zeigeChFrage() {
     btn.onclick = () => waehleAntwort(a, btn);
     cont.appendChild(btn);
   });
-
   chSekunden = 30;
   $('ch-timer').textContent = `⏱ ${chSekunden}s`;
   clearInterval(chTimer);
-  chTimer = setInterval(() => {
-    chSekunden--;
-    $('ch-timer').textContent = `⏱ ${chSekunden}s`;
-    if (chSekunden <= 0) { clearInterval(chTimer); zeitAbgelaufen(); }
-  }, 1000);
+  chTimer = setInterval(() => { chSekunden--; $('ch-timer').textContent = `⏱ ${chSekunden}s`; if (chSekunden <= 0) { clearInterval(chTimer); zeitAbgelaufen(); } }, 1000);
 }
 
 function waehleAntwort(antwort, btn) {
   clearInterval(chTimer);
   const richtig = chFragen[chIndex].richtig;
   const btns = $('ch-antworten').querySelectorAll('button');
-  btns.forEach(b => {
-    b.disabled = true;
-    if (b.textContent === richtig) b.style.background = 'var(--green)';
-  });
+  btns.forEach(b => { b.disabled = true; if (b.textContent === richtig) b.style.background = 'var(--green)'; });
   if (antwort === richtig) {
     chPunkte += Math.max(1, chSekunden);
     $('ch-feedback').textContent = '✅ Richtig! +' + Math.max(1, chSekunden) + ' Punkte';
@@ -390,10 +1240,7 @@ function waehleAntwort(antwort, btn) {
 
 function zeitAbgelaufen() {
   const richtig = chFragen[chIndex].richtig;
-  $('ch-antworten').querySelectorAll('button').forEach(b => {
-    b.disabled = true;
-    if (b.textContent === richtig) b.style.background = 'var(--green)';
-  });
+  $('ch-antworten').querySelectorAll('button').forEach(b => { b.disabled = true; if (b.textContent === richtig) b.style.background = 'var(--green)'; });
   $('ch-feedback').textContent = '⏰ Zeit! Richtig wäre: ' + richtig;
   $('ch-feedback').style.color = 'var(--yellow)';
   chIndex++;
